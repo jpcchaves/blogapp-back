@@ -24,8 +24,9 @@ public class PostControllerImpl implements IControllerCrud<PostDto, PostDto> {
     }
 
     @Override
+    @GetMapping(value = "/{id}")
     public ResponseEntity<PostDto> getById(Long id) {
-        return null;
+        return new ResponseEntity<>(postService.getById(id), HttpStatus.OK);
     }
 
     @Override

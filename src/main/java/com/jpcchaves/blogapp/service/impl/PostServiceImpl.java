@@ -1,6 +1,7 @@
 package com.jpcchaves.blogapp.service.impl;
 
 import com.jpcchaves.blogapp.entity.Post;
+import com.jpcchaves.blogapp.exception.ResourceNotFoundException;
 import com.jpcchaves.blogapp.payload.PostDto;
 import com.jpcchaves.blogapp.repository.PostRepository;
 import com.jpcchaves.blogapp.service.PostService;
@@ -30,5 +31,11 @@ public class PostServiceImpl implements PostService {
     public List<PostDto> getAll() {
         var posts = postRepository.findAll();
         return posts.stream().map(post -> mapper.map(post, PostDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public PostDto getById(Long id) {
+        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id.toString()));
+        return mapper.map(post, PostDto.class);
     }
 }
