@@ -4,8 +4,12 @@ import com.jpcchaves.blogapp.entity.Post;
 import com.jpcchaves.blogapp.payload.PostDto;
 import com.jpcchaves.blogapp.repository.PostRepository;
 import com.jpcchaves.blogapp.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -13,22 +17,18 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private ModelMapper mapper;
+
     @Override
     public PostDto create(PostDto postDto) {
-        Post post = new Post();
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
+        var post = mapper.map(postDto, Post.class);
+        return mapper.map(postRepository.save(post), PostDto.class);
+    }
 
-        var newPost = postRepository.save(post);
-
-        PostDto postResponse = new PostDto();
-
-        postResponse.setId(newPost.getId());
-        postResponse.setTitle(newPost.getTitle());
-        postResponse.setDescription(newPost.getDescription());
-        postResponse.setContent(newPost.getContent());
-
-        return postResponse;
+    @Override
+    public List<PostDto> getAll() {
+        var posts = postRepository.findAll();
+        return posts.stream().map(post -> mapper.map(post, PostDto.class)).collect(Collectors.toList());
     }
 }
