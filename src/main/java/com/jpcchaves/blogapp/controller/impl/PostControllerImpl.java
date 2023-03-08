@@ -35,7 +35,7 @@ public class PostControllerImpl implements IControllerCrud<PostDto, PostDto> {
     }
 
     @Override
-    public ResponseEntity<PostDto> update(PostDto request) {
+    public ResponseEntity<PostDto> update(Long id, PostDto request) {
         return null;
     }
 
