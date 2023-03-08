@@ -1,7 +1,6 @@
 package com.jpcchaves.blogapp.controller.impl;
 
 import com.jpcchaves.blogapp.controller.IControllerCrud;
-import com.jpcchaves.blogapp.entity.Post;
 import com.jpcchaves.blogapp.payload.PostDto;
 import com.jpcchaves.blogapp.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/posts")
-public class PostController implements IControllerCrud<PostDto , PostDto> {
+public class PostControllerImpl implements IControllerCrud<PostDto , PostDto> {
 
     @Autowired
     private PostService postService;
