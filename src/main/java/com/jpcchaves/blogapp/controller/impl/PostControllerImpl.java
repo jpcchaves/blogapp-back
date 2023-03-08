@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/posts")
-public class PostControllerImpl implements IControllerCrud<PostDto , PostDto> {
+public class PostControllerImpl implements IControllerCrud<PostDto, PostDto> {
 
     @Autowired
     private PostService postService;
@@ -29,8 +29,9 @@ public class PostControllerImpl implements IControllerCrud<PostDto , PostDto> {
     }
 
     @Override
-    public ResponseEntity<PostDto> create(PostDto request) {
-        return null;
+    @PostMapping
+    public ResponseEntity<PostDto> create(@RequestBody PostDto request) {
+        return new ResponseEntity<>(postService.create(request), HttpStatus.CREATED);
     }
 
     @Override
@@ -42,15 +43,4 @@ public class PostControllerImpl implements IControllerCrud<PostDto , PostDto> {
     public ResponseEntity<?> delete(Long id) {
         return null;
     }
-
-//    @PostMapping
-//    public ResponseEntity<PostDto> create(@RequestBody PostDto postDto) {
-//        return new ResponseEntity<>(postService.create(postDto), HttpStatus.CREATED);
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<List<PostDto>> getAll() {
-//        return new ResponseEntity<>(postService.getAll(), HttpStatus.OK);
-//    }
-
 }
