@@ -14,7 +14,7 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
 
     @Override
-    public PostDto createPost(PostDto postDto) {
+    public PostDto create(PostDto postDto) {
         Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
