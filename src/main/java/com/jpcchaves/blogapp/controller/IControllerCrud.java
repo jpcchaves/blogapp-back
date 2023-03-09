@@ -11,6 +11,5 @@ public interface IControllerCrud<Req, Res> {
     ResponseEntity<Req> getById(@PathVariable Long id);
     ResponseEntity<Res> create(@RequestBody Req request);
     ResponseEntity<Res> update(@PathVariable Long id, @RequestBody Req request);
-
     ResponseEntity<?> delete(@PathVariable Long id);
 }

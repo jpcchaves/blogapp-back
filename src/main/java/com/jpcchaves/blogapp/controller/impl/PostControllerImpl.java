@@ -36,8 +36,9 @@ public class PostControllerImpl implements IControllerCrud<PostDto, PostDto> {
     }
 
     @Override
-    public ResponseEntity<PostDto> update(Long id, PostDto request) {
-        return null;
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<PostDto> update(@PathVariable Long id, @RequestBody PostDto request) {
+        return new ResponseEntity<>(postService.update(id, request), HttpStatus.OK);
     }
 
     @Override

@@ -38,4 +38,12 @@ public class PostServiceImpl implements PostService {
         var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id.toString()));
         return mapper.map(post, PostDto.class);
     }
+
+    @Override
+    public PostDto update(Long id, PostDto postDto) {
+        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id.toString()));
+        postDto.setId(post.getId());
+        mapper.map(postDto, post);
+        return mapper.map(postRepository.save(post), PostDto.class);
+    }
 }
