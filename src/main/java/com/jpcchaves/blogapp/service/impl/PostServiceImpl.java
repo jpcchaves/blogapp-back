@@ -3,9 +3,11 @@ package com.jpcchaves.blogapp.service.impl;
 import com.jpcchaves.blogapp.entity.Post;
 import com.jpcchaves.blogapp.exception.ResourceNotFoundException;
 import com.jpcchaves.blogapp.payload.PostDto;
+import com.jpcchaves.blogapp.payload.PostResponseDto;
 import com.jpcchaves.blogapp.repository.PostRepository;
 import com.jpcchaves.blogapp.service.PostService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -31,7 +33,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAll(int pageNo, int pageSize) {
+    public PostResponseDto getAll(int pageNo, int pageSize) {
 
         if(pageSize <= 0) {
             pageSize = 1;
@@ -42,7 +44,18 @@ public class PostServiceImpl implements PostService {
         var page = postRepository.findAll(pageable);
         var posts = page.getContent();
 
-        return posts.stream().map(post -> mapper.map(post, PostDto.class)).collect(Collectors.toList());
+        var content = posts.stream().map(post -> mapper.map(post, PostDto.class)).collect(Collectors.toList());
+
+        PostResponseDto postResponse = new PostResponseDto();
+
+        postResponse.setContent(content);
+        postResponse.setPageNo(page.getNumber());
+        postResponse.setPageSize(page.getSize());
+        postResponse.setTotalPages(page.getTotalPages());
+        postResponse.setTotalElements(page.getTotalElements());
+        postResponse.setLast(page.isLast());
+
+        return postResponse;
     }
 
     @Override
