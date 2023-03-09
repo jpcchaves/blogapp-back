@@ -46,4 +46,10 @@ public class PostServiceImpl implements PostService {
         mapper.map(postDto, post);
         return mapper.map(postRepository.save(post), PostDto.class);
     }
+
+    @Override
+    public void delete(Long id) {
+        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id.toString()));
+        postRepository.delete(post);
+    }
 }

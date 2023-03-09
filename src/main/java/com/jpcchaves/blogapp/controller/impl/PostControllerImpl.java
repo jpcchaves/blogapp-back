@@ -42,7 +42,9 @@ public class PostControllerImpl implements IControllerCrud<PostDto, PostDto> {
     }
 
     @Override
-    public ResponseEntity<?> delete(Long id) {
-        return null;
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        postService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
