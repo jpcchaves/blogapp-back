@@ -19,8 +19,11 @@ public class PostControllerImpl implements IControllerCrud<PostDto, PostDto> {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<PostDto>> getAll() {
-        return new ResponseEntity<>(postService.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<PostDto>> getAll(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+            ) {
+        return new ResponseEntity<>(postService.getAll(pageNo,pageSize), HttpStatus.OK);
     }
 
     @Override

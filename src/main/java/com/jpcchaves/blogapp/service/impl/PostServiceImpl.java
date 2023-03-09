@@ -7,8 +7,11 @@ import com.jpcchaves.blogapp.repository.PostRepository;
 import com.jpcchaves.blogapp.service.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +31,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAll() {
-        var posts = postRepository.findAll();
+    public List<PostDto> getAll(int pageNo, int pageSize) {
+
+        if(pageSize <= 0) {
+            pageSize = 1;
+        }
+
+        var pageable = PageRequest.of(pageNo, pageSize);
+
+        var page = postRepository.findAll(pageable);
+        var posts = page.getContent();
+
         return posts.stream().map(post -> mapper.map(post, PostDto.class)).collect(Collectors.toList());
     }
 
