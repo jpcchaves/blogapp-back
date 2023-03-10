@@ -7,7 +7,6 @@ import com.jpcchaves.blogapp.repository.CommentRepository;
 import com.jpcchaves.blogapp.repository.PostRepository;
 import com.jpcchaves.blogapp.service.CommentService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,16 +15,16 @@ import java.util.stream.Collectors;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    @Autowired
     private CommentRepository commentRepository;
-
-    @Autowired
     private PostRepository postRepository;
-
-    @Autowired
     private ModelMapper mapper;
 
-
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, ModelMapper mapper) {
+        this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
+        this.mapper = mapper;
+    }
+    
     @Override
     public CommentDto create(Long postId, CommentDto commentDto) {
         var comment = mapper.map(commentDto, Comment.class);

@@ -1,8 +1,7 @@
 package com.jpcchaves.blogapp.controller;
 
 import com.jpcchaves.blogapp.payload.CommentDto;
-import com.jpcchaves.blogapp.service.impl.CommentServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.jpcchaves.blogapp.service.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 public class CommentController {
 
-    @Autowired
-    private CommentServiceImpl commentService;
+    private CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentDto> create(@PathVariable(value = "postId") Long postId, @RequestBody CommentDto commentDto) {

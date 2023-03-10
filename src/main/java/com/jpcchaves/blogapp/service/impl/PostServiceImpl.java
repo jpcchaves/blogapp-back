@@ -6,7 +6,6 @@ import com.jpcchaves.blogapp.payload.PostDto;
 import com.jpcchaves.blogapp.repository.PostRepository;
 import com.jpcchaves.blogapp.service.PostService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,11 +13,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class PostServiceImpl implements PostService {
 
-    @Autowired
     private PostRepository postRepository;
-
-    @Autowired
     private ModelMapper mapper;
+
+    public PostServiceImpl(PostRepository postRepository, ModelMapper mapper) {
+        this.postRepository = postRepository;
+        this.mapper = mapper;
+    }
 
     @Override
     public PostDto create(PostDto postDto) {
@@ -28,8 +29,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<PostDto> getAll(Pageable pageable) {
-       Page<Post> list = postRepository.findAll(pageable);
-       return list.map(post -> mapper.map(post, PostDto.class));
+        Page<Post> list = postRepository.findAll(pageable);
+        return list.map(post -> mapper.map(post, PostDto.class));
     }
 
     @Override
