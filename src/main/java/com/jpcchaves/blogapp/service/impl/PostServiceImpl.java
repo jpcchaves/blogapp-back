@@ -35,13 +35,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getById(Long id) {
-        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id.toString()));
+        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         return mapper.map(post, PostDto.class);
     }
 
     @Override
     public PostDto update(Long id, PostDto postDto) {
-        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id.toString()));
+        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         postDto.setId(post.getId());
         mapper.map(postDto, post);
         return mapper.map(postRepository.save(post), PostDto.class);
@@ -49,7 +49,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void delete(Long id) {
-        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id.toString()));
+        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         postRepository.delete(post);
     }
 }
