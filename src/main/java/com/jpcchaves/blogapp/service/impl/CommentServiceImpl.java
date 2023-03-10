@@ -10,6 +10,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -33,5 +36,14 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
 
         return mapper.map(comment, CommentDto.class);
+    }
+
+    @Override
+    public List<CommentDto> getCommentsByPostId(Long postId) {
+        var comments = commentRepository.findByPostId(postId);
+
+        return comments.stream()
+                .map(comment -> mapper.map(comment, CommentDto.class))
+                .collect(Collectors.toList());
     }
 }
