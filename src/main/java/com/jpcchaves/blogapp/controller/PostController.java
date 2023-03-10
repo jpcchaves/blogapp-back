@@ -1,4 +1,4 @@
-package com.jpcchaves.blogapp.controller.impl;
+package com.jpcchaves.blogapp.controller;
 
 import com.jpcchaves.blogapp.payload.PostDto;
 import com.jpcchaves.blogapp.service.PostService;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/posts")
-public class PostControllerImpl {
+public class PostController {
 
     @Autowired
     private PostService postService;
