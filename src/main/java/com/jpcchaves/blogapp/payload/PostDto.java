@@ -1,13 +1,26 @@
 package com.jpcchaves.blogapp.payload;
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 import java.util.Set;
 
 public class PostDto {
     private Long id;
+
+    @NotEmpty(message = "Title is required")
+    @Size(min = 2, message = "Post title should have at least 2 characters")
     private String title;
+
+    @NotEmpty(message = "Description is required")
+    @Size(min = 10, message = "Post title should have at least 10 characters")
     private String description;
+
+    @NotBlank(message = "Content is required")
     private String content;
+
     private Set<CommentDto> comments;
 
     public PostDto() {

@@ -3,6 +3,7 @@ package com.jpcchaves.blogapp.controller;
 import com.jpcchaves.blogapp.payload.PostDto;
 import com.jpcchaves.blogapp.payload.PostResponse;
 import com.jpcchaves.blogapp.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,12 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostDto> create(@RequestBody PostDto request) {
+    public ResponseEntity<PostDto> create(@Valid @RequestBody PostDto request) {
         return new ResponseEntity<>(postService.create(request), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<PostDto> update(@PathVariable(value = "id") Long id, @RequestBody PostDto request) {
+    public ResponseEntity<PostDto> update(@Valid @PathVariable(value = "id") Long id, @RequestBody PostDto request) {
         return new ResponseEntity<>(postService.update(id, request), HttpStatus.OK);
     }
 
