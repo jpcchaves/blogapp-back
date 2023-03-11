@@ -6,7 +6,7 @@ public class CommentDto {
     private String name;
     private String email;
     private String body;
-
+    
     public Long getId() {
         return id;
     }

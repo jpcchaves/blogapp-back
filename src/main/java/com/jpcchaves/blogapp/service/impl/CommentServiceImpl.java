@@ -1,6 +1,7 @@
 package com.jpcchaves.blogapp.service.impl;
 
 import com.jpcchaves.blogapp.entity.Comment;
+import com.jpcchaves.blogapp.entity.Post;
 import com.jpcchaves.blogapp.exception.BlogAPIException;
 import com.jpcchaves.blogapp.exception.ResourceNotFoundException;
 import com.jpcchaves.blogapp.payload.CommentDto;
@@ -8,7 +9,6 @@ import com.jpcchaves.blogapp.repository.CommentRepository;
 import com.jpcchaves.blogapp.repository.PostRepository;
 import com.jpcchaves.blogapp.service.CommentService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,20 @@ public class CommentServiceImpl implements CommentService {
         this.postRepository = postRepository;
         this.mapper = mapper;
     }
-    
+
+    private static void checkIfCommentBelongToRespepctivePost(Post post, Comment comment) {
+        if (!comment.getPost().getId().equals(post.getId())) {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to this post");
+        }
+    }
+
+    private static Comment updateComment(Comment currentComment, CommentDto updatedComment) {
+        currentComment.setName(updatedComment.getName());
+        currentComment.setEmail(updatedComment.getEmail());
+        currentComment.setBody(updatedComment.getBody());
+        return currentComment;
+    }
+
     @Override
     public CommentDto create(Long postId, CommentDto commentDto) {
         var comment = mapper.map(commentDto, Comment.class);
@@ -57,9 +70,7 @@ public class CommentServiceImpl implements CommentService {
         var comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", commentId));
 
-        if(!comment.getPost().getId().equals(post.getId())) {
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to this post");
-        }
+        checkIfCommentBelongToRespepctivePost(post, comment);
 
         return mapper.map(comment, CommentDto.class);
     }
@@ -72,17 +83,23 @@ public class CommentServiceImpl implements CommentService {
         var comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", commentId));
 
-        if(!comment.getPost().getId().equals(post.getId())) {
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to this post");
-        }
+        checkIfCommentBelongToRespepctivePost(post, comment);
 
-        comment.setPost(comment.getPost());
-        comment.setBody(comment.getBody());
-        comment.setEmail(comment.getEmail());
-        comment.setName(comment.getName());
-
-        commentRepository.save(comment);
+        commentRepository.save(updateComment(comment, commentDto));
 
         return mapper.map(comment, CommentDto.class);
+    }
+
+    @Override
+    public void deleteComment(Long postId, Long commentId) {
+        var post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+
+        var comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", commentId));
+
+        checkIfCommentBelongToRespepctivePost(post, comment);
+
+        commentRepository.delete(comment);
     }
 }
