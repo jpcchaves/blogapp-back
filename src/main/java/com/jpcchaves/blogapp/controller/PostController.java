@@ -1,8 +1,8 @@
 package com.jpcchaves.blogapp.controller;
 
 import com.jpcchaves.blogapp.payload.PostDto;
+import com.jpcchaves.blogapp.payload.PostResponse;
 import com.jpcchaves.blogapp.service.PostService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PostDto>> getAll(Pageable pageable) {
+    public ResponseEntity<PostResponse> getAll(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getAll(pageable));
     }
 
