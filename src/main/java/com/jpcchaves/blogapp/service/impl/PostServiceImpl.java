@@ -1,6 +1,7 @@
 package com.jpcchaves.blogapp.service.impl;
 
 import com.jpcchaves.blogapp.entity.Post;
+import com.jpcchaves.blogapp.exception.BlogAPIException;
 import com.jpcchaves.blogapp.exception.ResourceNotFoundException;
 import com.jpcchaves.blogapp.payload.PostDto;
 import com.jpcchaves.blogapp.payload.PostResponse;
@@ -9,9 +10,11 @@ import com.jpcchaves.blogapp.service.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,8 +28,19 @@ public class PostServiceImpl implements PostService {
         this.mapper = mapper;
     }
 
+    private void checkIfPostByTitleAlreadyExists(String postTitle) {
+        Optional<Post> postByTitle = Optional.ofNullable(postRepository.findPostByTitle(postTitle));
+
+        if (postByTitle.isPresent()) {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Post with title '" + postByTitle.get().getTitle() + "' already exists");
+        }
+    }
+
     @Override
     public PostDto create(PostDto postDto) {
+
+        checkIfPostByTitleAlreadyExists(postDto.getTitle());
+
         var post = mapper.map(postDto, Post.class);
         return mapper.map(postRepository.save(post), PostDto.class);
     }
@@ -61,6 +75,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto update(Long id, PostDto postDto) {
+        checkIfPostByTitleAlreadyExists(postDto.getTitle());
+
         var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         postDto.setId(post.getId());
         mapper.map(postDto, post);
