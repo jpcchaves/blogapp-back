@@ -2,7 +2,6 @@ package com.jpcchaves.blogapp.controller;
 
 import com.jpcchaves.blogapp.payload.LoginDto;
 import com.jpcchaves.blogapp.service.AuthService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +20,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginDto));
+        var response = authService.login(loginDto);
+        return ResponseEntity.ok(response);
     }
 }
