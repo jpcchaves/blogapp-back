@@ -1,5 +1,7 @@
 package com.jpcchaves.blogapp.config;
 
+import com.jpcchaves.blogapp.security.JwtAuthenticationEntryPoint;
+import com.jpcchaves.blogapp.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,8 +23,16 @@ public class SecurityConfig {
 
     private UserDetailsService userDetailsService;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    private JwtAuthenticationEntryPoint authenticationEntryPoint;
+
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(UserDetailsService userDetailsService,
+                          JwtAuthenticationEntryPoint authenticationEntryPoint,
+                          JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -49,9 +59,12 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        ;
 
-
+        http.addFilterBefore(jwtAuthenticationFilter, JwtAuthenticationFilter.class);
+        
         return http.build();
     }
 
