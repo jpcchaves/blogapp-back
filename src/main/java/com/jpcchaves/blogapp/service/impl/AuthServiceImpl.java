@@ -75,6 +75,7 @@ public class AuthServiceImpl implements AuthService {
 
         if (userRole.isPresent()) {
             roles.add(userRole.get());
+            user.setRoles(roles);
         }
 
         userRepository.save(user);
