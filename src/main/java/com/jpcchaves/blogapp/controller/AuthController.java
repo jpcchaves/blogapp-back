@@ -1,5 +1,6 @@
 package com.jpcchaves.blogapp.controller;
 
+import com.jpcchaves.blogapp.payload.JwtAuthResponse;
 import com.jpcchaves.blogapp.payload.LoginDto;
 import com.jpcchaves.blogapp.payload.RegisterDto;
 import com.jpcchaves.blogapp.service.AuthService;
@@ -21,9 +22,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        var response = authService.login(loginDto);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
+        var token = authService.login(loginDto);
+
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+
+        return ResponseEntity.ok(jwtAuthResponse);
     }
 
     @PostMapping("/register")
