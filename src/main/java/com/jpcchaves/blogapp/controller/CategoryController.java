@@ -35,6 +35,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryDto> update(@PathVariable(value = "id") Long id,
                                               @RequestBody CategoryDto categoryDto) {
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.update(id, categoryDto));
