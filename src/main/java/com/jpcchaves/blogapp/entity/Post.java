@@ -32,18 +32,25 @@ public class Post implements Serializable {
     @Column(name = "content", nullable = false)
     private String content;
 
+    // one posts have many comments
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
+
+    // many posts have one category
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public Post() {
     }
 
-    public Post(Long id, String title, String description, String content, Set<Comment> comments) {
+    public Post(Long id, String title, String description, String content, Set<Comment> comments, Category category) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.content = content;
         this.comments = comments;
+        this.category = category;
     }
 
     public Long getId() {
@@ -84,5 +91,13 @@ public class Post implements Serializable {
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
