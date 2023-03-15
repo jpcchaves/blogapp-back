@@ -4,4 +4,6 @@ import com.jpcchaves.blogapp.payload.CategoryDto;
 
 public interface CategoryService {
     CategoryDto create(CategoryDto categoryDto);
+
+    CategoryDto getById(Long categoryId);
 }

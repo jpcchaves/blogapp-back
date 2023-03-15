@@ -1,6 +1,7 @@
 package com.jpcchaves.blogapp.service.impl;
 
 import com.jpcchaves.blogapp.entity.Category;
+import com.jpcchaves.blogapp.exception.ResourceNotFoundException;
 import com.jpcchaves.blogapp.payload.CategoryDto;
 import com.jpcchaves.blogapp.repository.CategoryRepository;
 import com.jpcchaves.blogapp.service.CategoryService;
@@ -22,5 +23,12 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto create(CategoryDto categoryDto) {
         var category = mapper.map(categoryDto, Category.class);
         return mapper.map(repository.save(category), CategoryDto.class);
+    }
+
+    @Override
+    public CategoryDto getById(Long categoryId) {
+        var category = repository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+        return mapper.map(category, CategoryDto.class);
     }
 }
