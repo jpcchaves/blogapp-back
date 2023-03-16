@@ -40,4 +40,11 @@ public class CategoryController {
                                               @RequestBody CategoryDto categoryDto) {
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.update(id, categoryDto));
     }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
+        categoryService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
