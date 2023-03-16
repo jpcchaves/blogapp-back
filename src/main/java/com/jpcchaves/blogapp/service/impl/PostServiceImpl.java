@@ -88,10 +88,18 @@ public class PostServiceImpl implements PostService {
     public PostDto update(Long id, PostDto postDto) {
         checkIfPostByTitleAlreadyExists(postDto.getTitle());
 
+        var category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", postDto.getCategoryId()));
+
         var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-        postDto.setId(post.getId());
-        mapper.map(postDto, post);
-        return mapper.map(postRepository.save(post), PostDto.class);
+
+        post.setTitle(postDto.getTitle());
+        post.setDescription(postDto.getDescription());
+        post.setContent(postDto.getContent());
+        post.setCategory(category);
+        
+        postRepository.save(post);
+
+        return mapper.map(post, PostDto.class);
     }
 
     @Override
