@@ -1,5 +1,6 @@
 package com.jpcchaves.blogapp.service.impl;
 
+import com.jpcchaves.blogapp.entity.Category;
 import com.jpcchaves.blogapp.entity.Post;
 import com.jpcchaves.blogapp.exception.BlogAPIException;
 import com.jpcchaves.blogapp.exception.ResourceNotFoundException;
@@ -34,20 +35,12 @@ public class PostServiceImpl implements PostService {
         this.categoryRepository = categoryRepository;
     }
 
-    private void checkIfPostByTitleAlreadyExists(String postTitle) {
-        Optional<Post> postByTitle = Optional.ofNullable(postRepository.findPostByTitle(postTitle));
-
-        if (postByTitle.isPresent()) {
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Post with title '" + postByTitle.get().getTitle() + "' already exists");
-        }
-    }
-
     @Override
     public PostDto create(PostDto postDto) {
 
         checkIfPostByTitleAlreadyExists(postDto.getTitle());
 
-        var category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", postDto.getCategoryId()));
+        var category = checkIfCategoryExists(postDto.getCategoryId());
 
         var post = mapper.map(postDto, Post.class);
 
@@ -80,7 +73,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getById(Long id) {
-        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        var post = checkIfPostExists(id);
         return mapper.map(post, PostDto.class);
     }
 
@@ -88,16 +81,13 @@ public class PostServiceImpl implements PostService {
     public PostDto update(Long id, PostDto postDto) {
         checkIfPostByTitleAlreadyExists(postDto.getTitle());
 
-        var category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", postDto.getCategoryId()));
+        var category = checkIfCategoryExists(postDto.getCategoryId());
 
-        var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        var post = checkIfPostExists(id);
 
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
-        post.setCategory(category);
-        
-        postRepository.save(post);
+        var updatedPost = updatePostAtributes(post, postDto, category);
+
+        postRepository.save(updatedPost);
 
         return mapper.map(post, PostDto.class);
     }
@@ -106,5 +96,36 @@ public class PostServiceImpl implements PostService {
     public void delete(Long id) {
         var post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         postRepository.delete(post);
+    }
+
+    @Override
+    public List<PostDto> getPostsByCategory(Long categoryId) {
+        checkIfCategoryExists(categoryId);
+        var posts = postRepository.findPostByCategory(categoryId);
+        return posts.stream().map(post -> mapper.map(post, PostDto.class)).collect(Collectors.toList());
+    }
+
+    private Post updatePostAtributes(Post post, PostDto postDto, Category category) {
+        post.setTitle(postDto.getTitle());
+        post.setDescription(postDto.getDescription());
+        post.setContent(postDto.getContent());
+        post.setCategory(category);
+        return post;
+    }
+
+    private Category checkIfCategoryExists(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+    }
+
+    private Post checkIfPostExists(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+    }
+
+    private void checkIfPostByTitleAlreadyExists(String postTitle) {
+        Optional<Post> postByTitle = Optional.ofNullable(postRepository.findPostByTitle(postTitle));
+
+        if (postByTitle.isPresent()) {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Post with title '" + postByTitle.get().getTitle() + "' already exists");
+        }
     }
 }
