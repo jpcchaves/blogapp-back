@@ -85,7 +85,7 @@ public class PostServiceImpl implements PostService {
 
         var post = checkIfPostExists(id);
 
-        var updatedPost = updatePostAtributes(post, postDto, category);
+        var updatedPost = updatePostAttributes(post, postDto, category);
 
         postRepository.save(updatedPost);
 
@@ -101,11 +101,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDto> getPostsByCategory(Long categoryId) {
         checkIfCategoryExists(categoryId);
-        var posts = postRepository.findPostByCategory(categoryId);
+        var posts = postRepository.findByCategoryId(categoryId);
         return posts.stream().map(post -> mapper.map(post, PostDto.class)).collect(Collectors.toList());
     }
 
-    private Post updatePostAtributes(Post post, PostDto postDto, Category category) {
+    private Post updatePostAttributes(Post post, PostDto postDto, Category category) {
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
