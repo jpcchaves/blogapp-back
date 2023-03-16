@@ -5,6 +5,7 @@ import com.jpcchaves.blogapp.exception.BlogAPIException;
 import com.jpcchaves.blogapp.exception.ResourceNotFoundException;
 import com.jpcchaves.blogapp.payload.PostDto;
 import com.jpcchaves.blogapp.payload.PostResponse;
+import com.jpcchaves.blogapp.repository.CategoryRepository;
 import com.jpcchaves.blogapp.repository.PostRepository;
 import com.jpcchaves.blogapp.service.PostService;
 import org.modelmapper.ModelMapper;
@@ -21,11 +22,16 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
+
+    private CategoryRepository categoryRepository;
     private ModelMapper mapper;
 
-    public PostServiceImpl(PostRepository postRepository, ModelMapper mapper) {
+    public PostServiceImpl(PostRepository postRepository,
+                           ModelMapper mapper,
+                           CategoryRepository categoryRepository) {
         this.postRepository = postRepository;
         this.mapper = mapper;
+        this.categoryRepository = categoryRepository;
     }
 
     private void checkIfPostByTitleAlreadyExists(String postTitle) {
@@ -41,7 +47,12 @@ public class PostServiceImpl implements PostService {
 
         checkIfPostByTitleAlreadyExists(postDto.getTitle());
 
+        var category = categoryRepository.findById(postDto.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", postDto.getCategoryId()));
+
         var post = mapper.map(postDto, Post.class);
+
+        post.setCategory(category);
+
         return mapper.map(postRepository.save(post), PostDto.class);
     }
 

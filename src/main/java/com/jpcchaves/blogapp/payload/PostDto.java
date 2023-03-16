@@ -23,15 +23,18 @@ public class PostDto {
 
     private Set<CommentDto> comments;
 
+    private Long categoryId;
+
     public PostDto() {
     }
 
-    public PostDto(Long id, String title, String description, String content, Set<CommentDto> comments) {
+    public PostDto(Long id, String title, String description, String content, Set<CommentDto> comments, Long categoryId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.content = content;
         this.comments = comments;
+        this.categoryId = categoryId;
     }
 
     public Long getId() {
@@ -72,5 +75,13 @@ public class PostDto {
 
     public void setComments(Set<CommentDto> comments) {
         this.comments = comments;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 }
