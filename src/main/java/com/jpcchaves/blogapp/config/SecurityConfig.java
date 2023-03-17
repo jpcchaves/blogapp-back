@@ -53,9 +53,9 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests(
                         (authorize) -> authorize
-                                .requestMatchers(HttpMethod.GET, "/api/**")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/**")
                                 .permitAll()
-                                .requestMatchers("/api/auth/**")
+                                .requestMatchers("/api/v1/auth/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
