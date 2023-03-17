@@ -3,6 +3,7 @@ package com.jpcchaves.blogapp.controller;
 import com.jpcchaves.blogapp.payload.PostDto;
 import com.jpcchaves.blogapp.payload.PostResponse;
 import com.jpcchaves.blogapp.service.PostService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ public class PostController {
         this.postService = postService;
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/v1/posts")
     public ResponseEntity<PostDto> create(@Valid @RequestBody PostDto request) {
@@ -39,6 +41,7 @@ public class PostController {
     }
 
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/v1/posts/{id}")
     public ResponseEntity<PostDto> update(@PathVariable(value = "id") Long id,
@@ -46,6 +49,7 @@ public class PostController {
         return new ResponseEntity<>(postService.update(id, request), HttpStatus.OK);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/api/v1/posts/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
